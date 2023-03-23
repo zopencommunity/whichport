@@ -1,0 +1,22 @@
+diff --git a/configure b/configure
+index 19a6399..df00116 100755
+--- a/configure
++++ b/configure
+@@ -3825,7 +3825,7 @@ else
+     am__obj=sub/conftest.${OBJEXT-o}
+     am__minus_obj="-o $am__obj"
+     case $depmode in
+-    gcc)
++    gcc | pch)
+       # This depmode causes a compiler race in universal mode.
+       test "$am__universal" = false || continue
+       ;;
+@@ -3855,7 +3855,7 @@ else
+        grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
+        grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
+        grep $am__obj sub/conftest.Po > /dev/null 2>&1 &&
+-       ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
++       chtag -Rtc 1047 sub/conftest.Po; ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
+       # icc doesn't choke on unknown options, it will just issue warnings
+       # or remarks (even with -Werror).  So we grep stderr for any message
+       # that says an option was ignored or not supported.
