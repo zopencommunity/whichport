@@ -1,18 +1,11 @@
 export ZOPEN_TARBALL_URL="https://carlowood.github.io/which/which-2.21.tar.gz"
-#export ZOPEN_GIT_URL="https://git.savannah.gnu.org/git/which.git"
-export ZOPEN_GIT_URL="https://github.com/mitchcapper/which"
 export ZOPEN_TARBALL_DEPS="curl gzip make m4 grep sed gettext coreutils"
-export ZOPEN_GIT_DEPS="curl gzip make m4 grep sed gettext coreutils automake autoconf zoslib"
 export ZOPEN_TYPE="TARBALL"
-#export ZOPEN_TYPE="GIT"
-#export ZOPEN_BOOTSTRAP="./autogen.sh"
-
+export ZOPEN_CHECK="./which"
+export ZOPEN_CHECK_OPTS="--version"
 
 zopen_pre_build()
 {
-  src="$1"
-  echo "dh src = $src"
-  #chtag -Rtc 1047 *.Po
   find . -name "*.Po" | xargs chtag -tc 1047
 }
 
@@ -21,9 +14,10 @@ zopen_check_results()
   dir="$1"
   pfx="$2"
   chk="$1/$2_check.log"
-
+  grep "GNU which v2\.21" $chk
+  failures=$? 
   # Echo the following information to gauge build health
-  echo "actualFailures:0"
+  echo "actualFailures:$failures"
   echo "totalTests:1"
   echo "expectedFailures:0"
 }
@@ -42,5 +36,5 @@ zopen_get_version()
 {
   # Modify to echo the version of your tool/library
   # Rather than hardcoding the version, obtain the version by running the tool/library
-  echo "1.0.0"
+  echo "2.21"
 }
