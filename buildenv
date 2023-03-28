@@ -15,7 +15,7 @@ zopen_check_results()
   dir="$1"
   pfx="$2"
   chk="$1/$2_check.log"
-  WHICH_VERSION=$(./which --version | cut -d "," -f 1 | head -n 1 | cut -d " " -f 3 | tr -d 'v')
+  WHICH_VERSION="2.21"
   VERSION_CHK="GNU which v$WHICH_VERSION"
   grep "$VERSION_CHK" "$chk"
   failures=$?
