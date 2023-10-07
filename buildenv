@@ -4,6 +4,7 @@ export ZOPEN_TYPE="TARBALL"
 export __UNTAGGED_READ_MODE=ASCII
 export ZOPEN_CHECK="./which"
 export ZOPEN_CHECK_OPTS="--version"
+export ZOPEN_COMP=CLANG
 
 zopen_pre_install()
 {
