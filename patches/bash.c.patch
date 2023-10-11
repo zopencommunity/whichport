@@ -1,0 +1,34 @@
+diff --git a/bash.c b/bash.c
+index d9d5d09..9cd73ac 100644
+--- a/bash.c
++++ b/bash.c
+@@ -25,6 +25,9 @@
+ #include <unistd.h>
+ #include "bash.h"
+ 
++#ifdef __MVS__
++#include <errno.h>
++#endif
+ /* Use the type that was determined by configure. */
+ #define GID_T GETGROUPS_T
+ 
+@@ -245,8 +248,17 @@ file_status (char const* name)
+   int r;
+ 
+   /* Determine whether this file exists or not. */
+-  if (stat (name, &finfo) < 0)
+-    return (0);
++   #ifdef __MVS__
++   if (stat (name, &finfo) < 0) {
++    /* Workaround for z/OS not supporting stat on external links */
++    int old_errno = errno;
++    if (!(errno == ENOENT && lstat(name, &finfo) == 0 && S_ISEXTL(finfo.st_mode,finfo.st_genvalue))) {
++      /* lstat may reset errno */
++      errno = old_errno;
++      return (0);
++    }
++  }
++  #endif
+ 
+   /* If the file is a directory, then it is not "executable" in the
+      sense of the shell. */
