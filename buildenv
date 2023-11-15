@@ -15,14 +15,29 @@ zopen_check_results()
 {
   dir="$1"
   pfx="$2"
+  failures=0;
+  passed=0;
   chk="$1/$2_check.log"
   WHICH_VERSION="2.21"
   VERSION_CHK="GNU which v$WHICH_VERSION"
   grep "$VERSION_CHK" "$chk"
-  failures=$?
+  if [ $? -eq 1 ]; then 
+     failures=`expr $failures + 1`
+  else
+     passed=`expr $passed + 1`
+  fi
+
+  $PWD/which traceroute
+  if [ $? -eq 1 ]; then
+     failures=`expr $failures + 1`
+  else
+     passed=`expr $passed + 1`  
+  fi
+  
+  total=`expr $passed + $failures`
   # Echo the following information to gauge build health
   echo "actualFailures:$failures"
-  echo "totalTests:1"
+  echo "totalTests:$total"
   echo "expectedFailures:0"
 }
 
