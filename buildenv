@@ -44,5 +44,4 @@ zopen_get_version()
   # So, the below WHICH_VERSION shouldn't be in double quotes --> " "
   ./which --version | cut -d "," -f 1 | head -n 1 | cut -d " " -f 3 | tr -d 'v'
 
-  echo "$WHICH_VERSION"
 }
