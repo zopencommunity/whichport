@@ -41,7 +41,6 @@ zopen_append_to_setup()
 zopen_get_version()
 {
   # Bump's regex looks for --  WHICH_VERSION= followed by RHS in quotes.
-  # So, the below WHICH_VERSION shouldn't be in double quotes --> " "
   ./which --version | cut -d "," -f 1 | head -n 1 | cut -d " " -f 3 | tr -d 'v'
 
 }
