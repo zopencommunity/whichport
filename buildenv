@@ -4,21 +4,16 @@ WHICH_VERSION="2.21"
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="utilities"
 export ZOPEN_STABLE_URL="https://carlowood.github.io/which/which-${WHICH_VERSION}.tar.gz"
-export ZOPEN_STABLE_DEPS="curl gzip make m4 grep sed gettext coreutils"
-export __UNTAGGED_READ_MODE=ASCII
+export ZOPEN_STABLE_DEPS="curl gzip make m4 grep sed gettext coreutils getopt"
 export ZOPEN_CHECK="./which"
 export ZOPEN_CHECK_OPTS="--version"
 export ZOPEN_COMP=CLANG
-
-zopen_pre_install()
-{
-  chtag -b which
-}
 
 zopen_check_results()
 {
   dir="$1"
   pfx="$2"
+
   failures=0;
   passed=0;
   chk="$1/$2_check.log"
@@ -30,7 +25,7 @@ zopen_check_results()
      passed=`expr $passed + 1`
   fi
 
-  $PWD/which traceroute
+  $PWD/which traceroute 2> /dev/null > /dev/null
   if [ $? -eq 1 ]; then
      failures=`expr $failures + 1`
   else
