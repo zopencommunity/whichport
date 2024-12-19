@@ -1,13 +1,22 @@
 # bump: which-version /WHICH_VERSION="(.*)"/ https://carlowood.github.io/which|re:/HREF="which-([\d.]+).tar.gz"/$1/|semver:*
-WHICH_VERSION="2.21"
+export WHICH_VERSION="2.21"
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="utilities"
 export ZOPEN_STABLE_URL="https://carlowood.github.io/which/which-${WHICH_VERSION}.tar.gz"
-export ZOPEN_STABLE_DEPS="curl gzip make m4 grep sed gettext coreutils getopt"
-export ZOPEN_CHECK="./which"
+export ZOPEN_STABLE_DEPS="curl gzip make m4 grep sed gettext coreutils getopt diffutils gawk bash"
+export ZOPEN_CHECK="zopen_check"
 export ZOPEN_CHECK_OPTS="--version"
 export ZOPEN_COMP=CLANG
+
+zopen_check()
+{
+  ./which --version
+  # Run this manually on an update:
+  #PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest generate
+
+  PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest check
+}
 
 zopen_check_results()
 {
@@ -30,6 +39,14 @@ zopen_check_results()
      failures=`expr $failures + 1`
   else
      passed=`expr $passed + 1`  
+  fi
+
+  TEST_CHK="Check successful!"
+  grep "$TEST_CHK" "$chk"
+  if [ $? -eq 1 ]; then 
+     failures=`expr $failures + 1`
+  else
+     passed=`expr $passed + 1`
   fi
   
   total=`expr $passed + $failures`
