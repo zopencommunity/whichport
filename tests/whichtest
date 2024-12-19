@@ -1,0 +1,71 @@
+#! /bin/bash
+
+perform_test () {
+  (
+    cd "${0%/*}"  # Go to the script's directory
+    mkdir -p test
+    umask 022
+    export PATH=".:$HOME/bin:/bin:/usr/bin"
+    export HOME="$PWD/.."  # Set HOME to the parent directory
+    unset which
+    rm -f alias.list
+    awk '
+      BEGIN { use_alias = 0; pathtowhich = "'"$PWD/which"'" }  # Initialize variables in BEGIN block
+      {
+        sub("whichtest", pathtowhich);
+        if ($0 == "")
+          print;
+        else if ($0 ~ /^(export|umask|#|alias \/)/)
+          printf(">%s\n", $0);
+        else if ($0 ~ /^alias which/)
+        {
+          printf(">%s\n", $0);
+          use_alias = 1;
+          system("echo \""$0"\" >> alias.list");
+        }
+        else if ($0 ~ /^alias /)
+        {
+          printf(">%s\n", $0);
+          system("echo \""$0"\" >> alias.list");
+        }
+        else
+        {
+          printf(">%s\n", $0);
+          if (use_alias == 1)
+          {
+            if ($0 ~ /^which /)
+              sub("^which ", "/bin/cat alias.list | which --read-alias --show-tilde --show-dot ");
+          }
+          system($0 " 2>&1");
+        }
+      }
+    ' commands | sed -e 's/-objdir//g' > .testout;
+    rm -f cat xxx alias.list;  # Clean up test files
+  )
+}
+
+case "$1" in
+check)
+  perform_test;
+  if diff -u --ignore-matching-lines='-rwx------' --ignore-matching-lines='GNU which v2.[0-9]+,' --ignore-matching-lines='uid=1000(carlo) gid=1000(carlo)' "${0%/*}"/test/.reference .testout ; then
+    rm -f .testout;
+    echo "Check successful!"
+    exit 0;
+  else
+    echo "Check failed!";
+    exit -1;
+  fi
+  ;;
+generate)
+  perform_test;
+  cat .testout | sed -e 's%/home/carlo/c/which/which%which%g' > ../EXAMPLES;
+  mv .testout "${0%/*}"/test/.reference;
+  exit 0;
+  ;;
+*)
+  echo "Usage:"
+  echo "  $0 check    : Run a test"
+  echo "  $0 generate : Generates the reference to run the check against"
+  exit 0;
+  ;;
+esac
