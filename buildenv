@@ -11,12 +11,10 @@ export ZOPEN_COMP=CLANG
 
 zopen_check()
 {
-  set -x
-  pwd
   ./which --version
-  cd ../tests
-  ./whichtest generate
-  ./whichtest check
+  # Run this manually on an update: ./whichtest generate
+  PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest generate
+  PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest check
 }
 
 zopen_check_results()

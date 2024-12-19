@@ -1,16 +1,15 @@
-#! /bin/bash
+#!/bin/env bash
 
 perform_test () {
   (
-    cd "${0%/*}"  # Go to the script's directory
+    SCRIPTPATH="${0%/*}"  # Go to the script's directory
     mkdir -p test
     umask 022
-    export PATH=".:$HOME/bin:/bin:/usr/bin"
     export HOME="$PWD/.."  # Set HOME to the parent directory
     unset which
     rm -f alias.list
     awk '
-      BEGIN { use_alias = 0; pathtowhich = "'"$PWD/which"'" }  # Initialize variables in BEGIN block
+      BEGIN { use_alias = 0; pathtowhich = "'"$PATH_TO_WHICH/which"'" }  # Initialize variables in BEGIN block
       {
         sub("whichtest", pathtowhich);
         if ($0 == "")
@@ -39,7 +38,7 @@ perform_test () {
           system($0 " 2>&1");
         }
       }
-    ' commands | sed -e 's/-objdir//g' > .testout;
+    ' $SCRIPTPATH/commands | sed -e 's/-objdir//g' | sed -e "s#$ZOPEN_ROOTFS.*/#MYZOPEN/#g" | sed -e "s#$PATH_TO_WHICH##g" > .testout;
     rm -f cat xxx alias.list;  # Clean up test files
   )
 }
@@ -58,7 +57,7 @@ check)
   ;;
 generate)
   perform_test;
-  cat .testout | sed -e 's%/home/carlo/c/which/which%which%g' > ../EXAMPLES;
+  cat .testout | sed -e "s%$PATH_TO_WHICH%which%g" > ../EXAMPLES;
   mv .testout "${0%/*}"/test/.reference;
   exit 0;
   ;;

@@ -1,0 +1,149 @@
+>#!/bin/sh
+>umask 022
+>export _BPXK_AUTOCVT=ON
+>export _TAG_REDIR_OUT=TXT
+>export _TAG_REDIR_ERR=TXT
+
+>export PATH="$PATH_TO_WHICH:.:~/bin:/bin:/usr/bin"
+>export HOME=`(cd ~; pwd)`
+>alias /which="$PATH_TO_WHICH/which"
+
+>touch cat; chmod 755 cat; pwd
+
+>alias
+functions="typeset -f"
+autoload="typeset -fu"
+nohup="nohup "
+stop="kill -STOP"
+hash="alias -t"
+r="fc -s"
+integer="typeset -i"
+suspend="stop \$\$"
+history="fc -l"
+
+>/which
+Usage: /which [options] [--] COMMAND [...]
+Write the full path of COMMAND(s) to standard output.
+
+  --version, -[vV] Print version and exit successfully.
+  --help,          Print this help and exit successfully.
+  --skip-dot       Skip directories in PATH that start with a dot.
+  --skip-tilde     Skip directories in PATH that start with a tilde.
+  --show-dot       Don't expand a dot to current directory in output.
+  --show-tilde     Output a tilde for HOME directory for non-root.
+  --tty-only       Stop processing options on the right if not on tty.
+  --all, -a        Print all matches in PATH, not just the first
+  --read-alias, -i Read list of aliases from stdin.
+  --skip-alias     Ignore option --read-alias; don't read stdin.
+  --read-functions Read shell functions from stdin.
+  --skip-functions Ignore option --read-functions; don't read stdin.
+
+Recommended use is to write the output of (alias; declare -f) to standard
+input, so that which can show aliases and shell functions. See which(1) for
+examples.
+
+If the options --read-alias and/or --read-functions are specified then the
+output can be a full alias or function definition, optionally followed by
+the full path of each command used inside of those.
+
+Report bugs to <which-bugs@gnu.org>.
+
+>/which --version
+GNU which v2.21, Copyright (C) 1999 - 2015 Carlo Wood.
+GNU which comes with ABSOLUTELY NO WARRANTY;
+This program is free software; your freedom to use, change
+and distribute this program is protected by the GPL.
+
+>/which -- --version
+/which: no --version in (:MYZOPEN/bin)
+
+>/which cat
+/cat
+
+>/which --show-tilde cat
+/cat
+
+>/which --show-dot cat
+/cat
+
+>/which --show-tilde --show-dot cat
+/cat
+
+>/which --skip-dot cat
+/cat
+
+>(cd /bin; /which cat)
+/cat
+
+>(cd /bin; /which --show-dot cat)
+/cat
+
+>(cd /bin; PATH=".:/bin:/usr/bin" /which --skip-dot --show-dot cat)
+/bin/cat
+
+>/which ls
+MYZOPEN/ls
+
+>/which xxx
+/which: no xxx in (:MYZOPEN/bin)
+
+>/which ./ls
+/which: no ls in (.)
+
+>(cd /; /which bin/ls)
+/bin/ls
+
+>(cd /; /which --show-dot bin/ls)
+./bin/ls
+
+>(cd /; /which --show-dot /bin/ls)
+/bin/ls
+
+>(cd /; /which --show-dot bin/xxx)
+/which: no xxx in (./bin)
+
+>(cd /; /which --show-dot /bin/xxx)
+/which: no xxx in (/bin)
+
+>/which --all cat
+/cat
+MYZOPEN/cat
+/bin/cat
+
+>touch xxx
+>/which ./xxx
+/which: no xxx in (.)
+
+>chmod 711 xxx
+>/which ./xxx
+/xxx
+
+>chmod 655 cat
+>/which cat
+MYZOPEN/cat
+
+>alias which='alias | /which --tty-only --read-alias --show-tilde --show-dot'
+>alias test1='test1'
+>alias test2='echo "test2" | cat | sort'
+>alias test3='  echo "test2"|cat&sort'
+>alias test4='	ls &&sort ||/usr/bin/which || exit'
+
+>which which
+alias which='alias | /which --tty-only --read-alias --show-tilde --show-dot'
+	/bin/alias
+	/which
+>which test1
+alias test1='test1'
+>which test2
+alias test2='echo test2 | cat | sort'
+	MYZOPEN/echo
+	MYZOPEN/cat
+	MYZOPEN/sort
+>which test3
+alias test3='  echo test2|cat&sort'
+	MYZOPEN/cat
+	MYZOPEN/sort
+>which test4
+alias test4='	ls &&sort ||/usr/bin/which || exit'
+	MYZOPEN/ls
+	MYZOPEN/sort
