@@ -12,8 +12,9 @@ export ZOPEN_COMP=CLANG
 zopen_check()
 {
   ./which --version
-  # Run this manually on an update: ./whichtest generate
-  PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest generate
+  # Run this manually on an update:
+  #PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest generate
+
   PATH=$PWD:$PATH PATH_TO_WHICH=$PWD ../tests/whichtest check
 }
 
@@ -38,6 +39,14 @@ zopen_check_results()
      failures=`expr $failures + 1`
   else
      passed=`expr $passed + 1`  
+  fi
+
+  TEST_CHK="Check successful!"
+  grep "$TEST_CHK" "$chk"
+  if [ $? -eq 1 ]; then 
+     failures=`expr $failures + 1`
+  else
+     passed=`expr $passed + 1`
   fi
   
   total=`expr $passed + $failures`
