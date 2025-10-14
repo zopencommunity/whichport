@@ -1,0 +1,12 @@
+diff --git a/which.texi b/which.texi
+index 2b31b45..06ab57e 100644
+--- a/which.texi
++++ b/which.texi
+@@ -2,7 +2,6 @@
+ @c %**start of header
+ @setfilename which.info
+ @settitle @command{which}: show full path of commands
+-@include version.texi
+ @dircategory System administration
+ @direntry
+ * Which: (which).                               Show full path of commands.

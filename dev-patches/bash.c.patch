@@ -1,0 +1,35 @@
+diff --git a/bash.c b/bash.c
+index 530104a..ec8faf2 100644
+--- a/bash.c
++++ b/bash.c
+@@ -32,6 +32,9 @@
+ #endif
+ #include "bash.h"
+ 
++#ifdef __MVS__
++#include <errno.h>
++#endif
+ #if defined(HAVE_EACCESS)
+ int eaccess(const char *pathname, int mode);
+ #endif
+@@ -272,9 +275,17 @@ int file_status(char const *name)
+   int r;
+ 
+   /* Determine whether this file exists or not. */
+-  if (stat(name, &finfo) < 0)
+-    return (0);
+-
++  #ifdef __MVS__
++   if (stat (name, &finfo) < 0) {
++	/* Workaround for z/OS not supporting stat on external links */
++	int old_errno = errno;
++	if (!(errno == ENOENT && lstat(name, &finfo) == 0 && S_ISEXTL(finfo.st_mode,finfo.st_genvalue))) {
++		/* lstat may reset errno */
++		errno = old_errno;
++		return (0);
++	}
++   }
++#endif
+   /* If the file is a directory, then it is not "executable" in the
+      sense of the shell. */
+   if (S_ISDIR(finfo.st_mode))
