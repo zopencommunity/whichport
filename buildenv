@@ -1,5 +1,5 @@
 # bump: which-version /WHICH_VERSION="(.*)"/ https://carlowood.github.io/which|re:/HREF="which-([\d.]+).tar.gz"/$1/|semver:*
-export WHICH_VERSION="2.21"
+export WHICH_VERSION="2.23"
 
 export ZOPEN_BUILD_LINE="DEV"
 export ZOPEN_CATEGORIES="utilities"
