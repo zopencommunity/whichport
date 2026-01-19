@@ -1,23 +1,21 @@
 diff --git a/bash.c b/bash.c
-index d9d5d09..9cd73ac 100644
+index 530104a..3f6f057 100644
 --- a/bash.c
 +++ b/bash.c
-@@ -25,6 +25,9 @@
- #include <unistd.h>
+@@ -31,6 +31,9 @@
+ #include <shlobj_core.h>
+ #endif
  #include "bash.h"
- 
 +#ifdef __MVS__
 +#include <errno.h>
 +#endif
- /* Use the type that was determined by configure. */
- #define GID_T GETGROUPS_T
  
-@@ -245,8 +248,17 @@ file_status (char const* name)
+ #if defined(HAVE_EACCESS)
+ int eaccess(const char *pathname, int mode);
+@@ -272,8 +275,20 @@ int file_status(char const *name)
    int r;
  
    /* Determine whether this file exists or not. */
--  if (stat (name, &finfo) < 0)
--    return (0);
 +   #ifdef __MVS__
 +   if (stat (name, &finfo) < 0) {
 +    /* Workaround for z/OS not supporting stat on external links */
@@ -28,6 +26,9 @@ index d9d5d09..9cd73ac 100644
 +      return (0);
 +    }
 +  }
++  #else
+   if (stat(name, &finfo) < 0)
+     return (0);
 +  #endif
  
    /* If the file is a directory, then it is not "executable" in the

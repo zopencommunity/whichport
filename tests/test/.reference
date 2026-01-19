@@ -49,7 +49,7 @@ the full path of each command used inside of those.
 Report bugs to <which-bugs@gnu.org>.
 
 >/which --version
-GNU which v2.21, Copyright (C) 1999 - 2015 Carlo Wood.
+GNU which v2.23, Copyright (C) 1999 - 2025 Carlo Wood.
 GNU which comes with ABSOLUTELY NO WARRANTY;
 This program is free software; your freedom to use, change
 and distribute this program is protected by the GPL.
