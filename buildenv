@@ -1,5 +1,5 @@
 # bump: which-version /WHICH_VERSION="(.*)"/ https://ftp.gnu.org/gnu/which/|re:/which-([\d.]+).tar.gz/$1/|semver:*
-export WHICH_VERSION="2.23"
+export WHICH_VERSION="2.25"
 
 export ZOPEN_BUILD_LINE="STABLE"
 export ZOPEN_CATEGORIES="utilities"
