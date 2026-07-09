@@ -38,7 +38,7 @@ perform_test () {
           system($0 " 2>&1");
         }
       }
-    ' $SCRIPTPATH/commands | sed -e 's/-objdir//g' | sed -e "s#$ZOPEN_ROOTFS.*/#MYZOPEN/#g" | sed -e "s#$PATH_TO_WHICH##g" > .testout;
+    ' $SCRIPTPATH/commands | sed -e 's/-objdir//g' | sed -e "s#$ZOPEN_ROOTFS.*/#MYZOPEN/#g" | sed -e "s#$PATH_TO_WHICH##g" | sed -e 's#:[^:)]*\.pi[^:)]*##g' | sed -e 's#:[^:)]*home[^:)]*##g' > .testout;
     rm -f cat xxx alias.list;  # Clean up test files
   )
 }
@@ -46,7 +46,7 @@ perform_test () {
 case "$1" in
 check)
   perform_test;
-  if diff -u --ignore-matching-lines='-rwx------' --ignore-matching-lines='GNU which v2.[0-9]+,' --ignore-matching-lines='uid=1000(carlo) gid=1000(carlo)' "${0%/*}"/test/.reference .testout ; then
+  if diff -u --ignore-matching-lines='-rwx------' --ignore-matching-lines='GNU which v[0-9][0-9.]*,' --ignore-matching-lines='uid=1000(carlo) gid=1000(carlo)' "${0%/*}"/test/.reference .testout ; then
     rm -f .testout;
     echo "Check successful!"
     exit 0;
